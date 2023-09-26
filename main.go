@@ -20,6 +20,10 @@ func main() {
 	AnnounceNewEventsLock = false
 	InitConfig()
 
+	CheckNewEvent(kvs)
+	AnnounceNewEvents(kvs)
+	AnnounceStarts(kvs)
+
 	c := cron.New()
 	c.AddFunc("@every 5m", func() {
 		CheckNewEvent(kvs)

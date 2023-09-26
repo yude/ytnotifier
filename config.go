@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -52,7 +53,7 @@ func InitConfig() {
 		GetChannelsFromUrl()
 	}
 
-	log.Println("Loaded " + string(len(channels)) + "channels: ")
+	log.Println("Loaded " + fmt.Sprint(len(channels)) + " channels: ")
 	for _, v := range channels {
 		log.Println(" - " + v.Name)
 	}

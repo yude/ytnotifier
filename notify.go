@@ -33,7 +33,7 @@ func AnnounceNewEvents(store gokv.Store) {
 			}
 
 			// Announce this
-			msg := `🆕 配信予定\n` + cv.Name + ": " + ev.Title + "\n🔗 " + ev.Url + "\n⏰ " + FormatDateTime(ev.StartsAt) + " 開始"
+			msg := `🆕 配信予定\n` + cv.Name + ": " + ev.Title + "<br />🔗 " + ev.Url + "<br />⏰ " + FormatDateTime(ev.StartsAt) + " 開始"
 			PostToMastodon(msg)
 
 			// Mark this as already announced
