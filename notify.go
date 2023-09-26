@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -33,8 +34,12 @@ func AnnounceNewEvents(store gokv.Store) {
 			}
 
 			// Announce this
-			msg := `🆕 配信予定\n` + cv.Name + ": " + ev.Title + "<br />🔗 " + ev.Url + "<br />⏰ " + FormatDateTime(ev.StartsAt) + " 開始"
-			PostToMastodon(msg)
+			msg := fmt.Sprintf("🆕 配信予定\n%v: %v\n🔗 %v\n⏰ %v 開始", cv.Name, ev.Title, ev.Url, FormatDateTime(ev.StartsAt))
+			err = PostToMastodon(msg)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
 
 			// Mark this as already announced
 			err = store.Set(ev.Url, "true")
@@ -55,13 +60,16 @@ func AnnounceStarts(store gokv.Store) {
 				continue
 			}
 			// Check date & time this starts
-			d := GetVideoDetails(ev.Url)
+			d, err := GetVideoDetails(ev.Url)
+			if err != nil {
+				continue
+			}
 			if !IsStarted(d) {
 				continue
 			}
 
 			// Announce this
-			msg := `⏺️ 配信開始\n` + cv.Name + ": " + ev.Title + "\n🔗 " + ev.Url
+			msg := fmt.Sprintf("⏺️ 配信開始\n%v: %v\n🔗 %v", cv.Name, ev.Title, ev.Url)
 			PostToMastodon(msg)
 
 			// Delete this event from queue (on RAM & KV)

@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
 )
 
-func GetVideoDetails(video_url string) YouTubeVideoDetails {
+func GetVideoDetails(video_url string) (YouTubeVideoDetails, error) {
 	var data YouTubeVideoDetails
 	api_url := "https://www.youtube.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8"
 	video_id := GetVideoId(video_url)
@@ -55,25 +54,25 @@ func GetVideoDetails(video_url string) YouTubeVideoDetails {
 
 	r, err := http.NewRequest("POST", api_url, bytes.NewBuffer(body))
 	if err != nil {
-		log.Println(err)
+		return data, err
 	}
 	r.Header.Add("Content-Type", "application/json")
 
 	client := &http.Client{}
 	res, err := client.Do(r)
 	if err != nil {
-		log.Println(err)
+		return data, err
 	}
 	defer res.Body.Close()
 
 	res_body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err)
+		return data, err
 	}
 
 	json.Unmarshal(res_body, &data)
 
-	return data
+	return data, nil
 }
 
 func GetVideoId(video_url string) string {

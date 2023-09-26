@@ -46,7 +46,10 @@ func CheckNewEvent(store gokv.Store) {
 				continue
 			}
 
-			d := GetVideoDetails(iv.Link)
+			d, err := GetVideoDetails(iv.Link)
+			if err != nil {
+				continue
+			}
 
 			// Not a live streaming
 			if !(IsLiveStream(d)) {
