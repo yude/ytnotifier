@@ -21,7 +21,7 @@ func main() {
 	InitConfig()
 
 	c := cron.New()
-	c.AddFunc("@every 5s", func() {
+	c.AddFunc("@every 5m", func() {
 		CheckNewEvent(kvs)
 		AnnounceNewEvents(kvs)
 		AnnounceStarts(kvs)
