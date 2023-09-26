@@ -10,6 +10,9 @@ import (
 func PostToMastodon(toot string) error {
 	val := url.Values{}
 	val.Set("status", toot)
+	val.Set("visibility", "unlisted")
+	val.Set("language", "ja")
+	val.Set("sensitive", "true")
 
 	res, err := http.PostForm(cfg.Mastodon.Domain+"/api/v1/statuses?access_token="+cfg.Mastodon.Token, val)
 	if err != nil {
