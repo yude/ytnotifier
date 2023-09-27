@@ -18,7 +18,11 @@ func main() {
 
 	CheckNewEventLock = false
 	AnnounceNewEventsLock = false
+
+	log.Println("Initializing...")
 	InitConfig()
+
+	log.Println("Started monitoring configured channels.")
 
 	CheckNewEvent(kvs)
 	AnnounceNewEvents(kvs)
@@ -30,8 +34,6 @@ func main() {
 		AnnounceNewEvents(kvs)
 		AnnounceStarts(kvs)
 	})
-
-	log.Println("Started monitoring configured channels.")
 	c.Start()
 
 	select {}
