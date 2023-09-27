@@ -1,0 +1,19 @@
+services:
+  app:
+    image: ghcr.io/yude/ytnotifier:master
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    environment:
+      TZ: "Asia/Tokyo"
+    volumes:
+      - type: bind
+        source: ./config.toml
+        target: /app/config.toml
+      - type: bind
+        source: gokv
+        target: /app/gokv
+
+volumes:
+  gokv:
