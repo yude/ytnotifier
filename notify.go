@@ -34,7 +34,13 @@ func AnnounceNewEvents(store gokv.Store) {
 			}
 
 			// Announce this
-			msg := fmt.Sprintf("🆕 配信予定\n%v: %v\n🔗 %v\n⏰ %v 開始", cv.Name, ev.Title, ev.Url, FormatDateTime(ev.StartsAt))
+			var msg string
+			if ev.StartsAt == time.Unix(0, 0) {
+				msg = fmt.Sprintf("🆕 配信予定\n%v: %v\n🔗 %v\n⏰ 開始時刻未定", cv.Name, ev.Title, ev.Url)
+			} else {
+				msg = fmt.Sprintf("🆕 配信予定\n%v: %v\n🔗 %v\n⏰ %v 開始", cv.Name, ev.Title, ev.Url, FormatDateTime(ev.StartsAt))
+			}
+
 			err = PostToMastodon(msg)
 			if err != nil {
 				log.Println(err)
