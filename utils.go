@@ -7,7 +7,7 @@ import (
 )
 
 func FormatDateTime(t time.Time) string {
-	return t.Format("2006/1/2 15:04:05 MST")
+	return t.Format("2006/1/2 15:04 MST")
 }
 
 func IsMatchesIncludeFilter(title string) bool {
