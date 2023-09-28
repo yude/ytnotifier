@@ -53,10 +53,7 @@ func InitConfig() {
 		GetChannelsFromUrl()
 	}
 
-	log.Println("Loaded " + fmt.Sprint(len(channels)) + " channels: ")
-	for _, v := range channels {
-		log.Println(" - " + v.Name)
-	}
+	log.Println("Loaded " + fmt.Sprint(len(channels)) + " channels.")
 }
 
 func GetChannelsFromConfig() {
