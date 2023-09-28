@@ -21,7 +21,7 @@ func main() {
 
 	log.Println("Initializing...")
 	InitConfig()
-	CheckMastodonCredentials()
+	InitMastodon()
 
 	log.Println("Started monitoring configured channels.")
 

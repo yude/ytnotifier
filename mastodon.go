@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func PostToMastodon(toot string) error {
@@ -33,6 +34,11 @@ func PostToMastodon(toot string) error {
 	return nil
 }
 
+func InitMastodon() {
+	CheckMastodonCredentials()
+	SetupMastodonProfile()
+}
+
 func CheckMastodonCredentials() {
 	if cfg.Mastodon.Domain == "" {
 		log.Fatal("The domain of Mastodon instance is not specified.")
@@ -54,4 +60,29 @@ func CheckMastodonCredentials() {
 		}
 		log.Fatal("Failed to log in to Mastodon instance.")
 	}
+}
+
+func SetupMastodonProfile() {
+	val := url.Values{}
+	val.Set("bot", "true")
+	val.Set("source[language]", "ja")
+
+	res, err := http.PostForm(cfg.Mastodon.Domain+"/api/v1/accounts/update_credentials?access_token="+cfg.Mastodon.Token, val)
+	if err != nil {
+		log.Println("Failed to set proper profile to my Mastodon account. Ignoring.")
+	}
+
+	defer res.Body.Close()
+}
+
+func SetLastUpdatedToMastodon(t time.Time) {
+	val := url.Values{}
+	val.Set("fields_attributes[3][🔃 最終更新]", FormatDateTime(t))
+
+	res, err := http.PostForm(cfg.Mastodon.Domain+"/api/v1/accounts/update_credentials?access_token="+cfg.Mastodon.Token, val)
+	if err != nil {
+		log.Println("Failed to update last update timestamp. Ignoring.")
+	}
+
+	defer res.Body.Close()
 }
