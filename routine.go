@@ -28,7 +28,7 @@ func CheckNewEvent(store gokv.Store) {
 			}
 			// Already added to event list (on KV)
 			kvItem := new(string)
-			kvFound, err := store.Get(iv.Link, kvItem)
+			kvFound, err := store.Get(RemoveBaseUrlFromYouTubeLink(iv.Link), kvItem)
 			if err != nil {
 				log.Println(err)
 			}
@@ -70,16 +70,14 @@ func CheckNewEvent(store gokv.Store) {
 			cv.Events[iv.Link] = new
 
 			// Add this event to event list (on KV)
-			err = store.Set(iv.Link, "false")
+			err = store.Set(RemoveBaseUrlFromYouTubeLink(iv.Link), "false")
 			if err != nil {
 				log.Println(err)
 			}
-		}
 
-		for _, e := range cv.Events {
+			// Log this event
 			fmt.Println("[New event]")
-			PrettyPrintEvent(e)
-			fmt.Print("\n")
+			PrettyPrintEvent(new)
 		}
 
 		cv.LastChecked = time.Now()

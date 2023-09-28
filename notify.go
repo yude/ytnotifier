@@ -20,7 +20,7 @@ func AnnounceNewEvents(store gokv.Store) {
 	for _, cv := range channels {
 		for ek, ev := range cv.Events {
 			kvItem := new(string)
-			found, err := store.Get(ev.Url, kvItem)
+			found, err := store.Get(RemoveBaseUrlFromYouTubeLink(ev.Url), kvItem)
 
 			// If there is desync or any error, remove this event from RAM
 			if !found || err != nil {
@@ -48,7 +48,7 @@ func AnnounceNewEvents(store gokv.Store) {
 			}
 
 			// Mark this as already announced
-			err = store.Set(ev.Url, "true")
+			err = store.Set(RemoveBaseUrlFromYouTubeLink(ev.Url), "true")
 			if err != nil {
 				log.Println(err)
 			}
