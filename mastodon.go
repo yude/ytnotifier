@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -30,4 +31,27 @@ func PostToMastodon(toot string) error {
 	}
 
 	return nil
+}
+
+func CheckMastodonCredentials() {
+	if cfg.Mastodon.Domain == "" {
+		log.Fatal("The domain of Mastodon instance is not specified.")
+	}
+
+	req, _ := http.NewRequest(
+		"GET",
+		cfg.Mastodon.Domain+"/api/v1/accounts/verify_credentials",
+		nil,
+	)
+	req.Header.Set("Authorization", "Bearer "+cfg.Mastodon.Token)
+	client := new(http.Client)
+
+	res, err := client.Do(req)
+
+	if err != nil || res.StatusCode == 401 {
+		if err != nil {
+			log.Println(err)
+		}
+		log.Fatal("Failed to log in to Mastodon instance.")
+	}
 }
