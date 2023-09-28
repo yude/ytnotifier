@@ -41,3 +41,7 @@ func IsMatchesExcludeFilter(title string) bool {
 func PrettyPrintEvent(e Event) {
 	fmt.Printf("Title: %v \nURL: %v \nStarts at: %v", e.Title, e.Url, FormatDateTime(e.StartsAt))
 }
+
+func RemoveBaseUrlFromYouTubeLink(l string) string {
+	return strings.Replace(l, "https://www.youtube.com/watch?v=", "", -1)
+}
