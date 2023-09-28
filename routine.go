@@ -81,8 +81,8 @@ func CheckNewEvent(store gokv.Store) {
 		}
 
 		cv.LastChecked = time.Now()
-		SetLastUpdatedToMastodon(time.Now())
 	}
 
+	SetLastUpdatedToMastodon(time.Now())
 	CheckNewEventLock = false
 }

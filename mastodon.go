@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -76,12 +77,25 @@ func SetupMastodonProfile() {
 }
 
 func SetLastUpdatedToMastodon(t time.Time) {
-	val := url.Values{}
-	val.Set("fields_attributes[3][🔃 最終更新]", FormatDateTime(t))
+	query := `fields_attributes[0][name]=🐱 GitHub&fields_attributes[0][value]=https://github.com/yude/ytnotifier&fields_attributes[1][name]=🔁 最終更新&fields_attributes[1][value]=` + FormatDateTime(t)
+	req, _ := http.NewRequest(
+		"PATCH",
+		cfg.Mastodon.Domain+"/api/v1/accounts/update_credentials?"+query,
+		nil,
+	)
+	req.Header.Set("Authorization", "Bearer "+cfg.Mastodon.Token)
+	req.Header.Set("Content-Type", "application/json")
+	client := new(http.Client)
 
-	res, err := http.PostForm(cfg.Mastodon.Domain+"/api/v1/accounts/update_credentials?access_token="+cfg.Mastodon.Token, val)
-	if err != nil {
-		log.Println("Failed to update last update timestamp. Ignoring.")
+	res, err := client.Do(req)
+	if err != nil || res.StatusCode != 200 {
+		log.Println("Failed to last update timestamp. Ignoring.")
+		if err != nil {
+			log.Println(err)
+		}
+		if res.StatusCode != 200 {
+			log.Println("Status code: " + fmt.Sprint(res.StatusCode))
+		}
 	}
 
 	defer res.Body.Close()
