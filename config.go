@@ -59,6 +59,10 @@ func InitConfig() {
 func GetChannelsFromConfig() {
 	for _, v := range cfg.Channels {
 		f := ParseRss(v)
+		if f == nil {
+			log.Printf("RSS feed %v no longer exist, skipping.\n", v)
+			continue
+		}
 		new := Channel{
 			Url:         v,
 			Name:        f.Author.Name,
@@ -72,7 +76,7 @@ func GetChannelsFromConfig() {
 func GetChannelsFromUrl() {
 	resp, err := http.Get(cfg.ChannelsUrl)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to get channel list source: %v\n", err)
 	}
 	defer resp.Body.Close()
 
@@ -84,6 +88,10 @@ func GetChannelsFromUrl() {
 			continue
 		}
 		f := ParseRss(v)
+		if f == nil {
+			log.Printf("RSS feed %v no longer exist, skipping.\n", v)
+			continue
+		}
 		new := Channel{
 			Url:         v,
 			Name:        f.Author.Name,
